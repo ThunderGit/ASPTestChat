@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "ASPTestChat";
+}
+@using ASPTestChat.Models
+@model ChatContext
+<!DOCTYPE html>
+
+<h2>Test Chat</h2>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ASPTestChat</title>
+    @Styles.Render("~/Content/Chat.css")
+</head>
+<body>
+    <div id="UsersDesk">
+        <b>Users:</b><br/><br />
+        @{
+            if (ViewBag.Users != null)
+            {
+                foreach (User user in ViewBag.Users)
+                {
+                    <p>@user.Name</p>
+                }
+            }
+            <input type="hidden" id="CurrentUser" value="@User.Identity.Name">
+        }
+    </div>
+
+    <div id="Deskboard">
+        @{
+            if (ViewBag.Messages != null)
+            {
+                foreach (Message msg in ViewBag.Messages)
+                {
+
+                    @msg.PostDate<br />
+                    if (msg.user != null)
+                    {
+                        <b>@(msg.user.Name + ":")</b> @msg.Text
+                    }
+
+                }
+            }
+        }
+    </div>
+    <div id="SendMessage">
+        <textarea id="textMessage" placeholder="Write a message..."></textarea>
+        <button onclick="Send()">Send &gt</button>
+    </div>
+        @Ajax.ActionLink("ActionLink", "Chat", new {chatUser = "", chatMessage = "" },
+    new AjaxOptions { UpdateTargetId = "Deskboard", OnSuccess = "ChatOnSuccess", OnFailure = "ChatOnFailure" },
+    new { @id = "ActionLink", @style = "visibility:hidden;" })
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+    @Scripts.Render("~/Scripts/Chat.js")
+</body>
+</html>
+
+
+
